@@ -13,9 +13,9 @@ namespace L1S01GameServerMonitoring
         const string jsonStatePath = @"\Logs";
 
         /// <summary>
-        /// 
+        /// Выводит в консоль о состоянии
         /// </summary>
-        /// <param name="state"></param>
+        /// <param name="state">Выводимое состояние</param>
         static void RevealServerState(ServerState state)
         {
             Console.WriteLine("=-=-=-=-=-=-=-=-=");
@@ -63,9 +63,9 @@ namespace L1S01GameServerMonitoring
         }
 
         /// <summary>
-        /// 
+        /// Сохраняет файлы сессии в json
         /// </summary>
-        /// <param name="state"></param>
+        /// <param name="state">Сохраняемое состояние</param>
         static void SaveFileAboutSession(ServerState state)
         {
             string fileName = $"SavedSession{DateTime.Now.ToShortDateString()}.json";
@@ -113,6 +113,7 @@ namespace L1S01GameServerMonitoring
         }
         static void Main(string[] args)
         {
+            //Получение системных данных
             string oc = Environment.OSVersion.ToString();
             int processorCount = Environment.ProcessorCount;
             ulong ramTotal = 0;
@@ -129,10 +130,10 @@ namespace L1S01GameServerMonitoring
             float ramFreeFloat = ramFree.NextValue();
             PerformanceCounter memoryTotal = new PerformanceCounter("PhysicalDisk", "% Disk Time", "_Total");
             float memoryTotalFloat = ramFree.NextValue();
-
+            //Получение информации о игроках
             List<Player> savedPlayers = ReadSavedPlayersJson();
             int playerCount = savedPlayers.Count;
-
+            //Составление состояние сервера
             ServerState s = new ServerState(
                 oc,
                 processorCount,
@@ -147,7 +148,7 @@ namespace L1S01GameServerMonitoring
             Console.WriteLine("Состояние сервера составлено");
             Thread.Sleep(1000);
             Console.Clear();
-
+            //Цикличное меню
             bool cycle = true;
             while (cycle)
             {
@@ -184,6 +185,7 @@ namespace L1S01GameServerMonitoring
                         break;
                     // Выход из программы
                     case "0":
+                        //Сохранение игроков и состояния
                         SaveFileAboutSession(s);
                         SaveSavedPlayersJson(savedPlayers);
                         cycle = false;
